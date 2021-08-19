@@ -5,7 +5,9 @@ let optionsTime = [30, 60, 120, 300, 600, 1200, 1800, 3600];
 let isPlaying = false;
 let isSelected = false;
 let isPlayingMusic = false;
-const audio = new Audio("./m.mp3", {
+
+
+const audio = new Audio("./goodbye-stress-calming-acoustic-guitar-instrumental-background-music-for-videos-5714.mp3", {
   loop: true,
 });
 
