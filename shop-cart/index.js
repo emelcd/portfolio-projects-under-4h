@@ -1,7 +1,7 @@
 import { html, render } from "lit-html";
-
+import {v4 as uuid} from "uuid";
 let $ = document.querySelector.bind(document);
-let counter = 0
+let counter = 0;
 
 let shopCart = {};
 
@@ -49,6 +49,56 @@ const styles = html`
       box-shadow: 0px 0px 10px #000000;
       margin-bottom: 10px;
     }
+    button {
+      background-color: #353131;
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    input {
+      width: 50%;
+      height: 30px;
+      font-size: 1.2em;
+      padding: 10px;
+      border: none;
+      text-align: center;
+      border-radius: 10px;
+      background-color: #353131;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      
+    }
+    li {
+      border-bottom: 1px solid #353131;
+      padding: 10px;
+      margin-bottom: 0.2rem;
+    }
+    #cart {
+      width: 500px;
+      margin: 0 auto;
+      border: 1px solid #353131;
+      position:absolute;
+      z-index: 4;
+      background-color: #f5f5f5;
+      left: 40vw;
+
+    }
+    .send-btn {
+      width: 100%;
+      background-color: #353131;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 1.2em;
+      margin-bottom: 0.2rem;
+
+    }
   </style>
 `;
 
@@ -90,9 +140,47 @@ const addToCart = (id) => {
   } else {
     shopCart[id]++;
   }
-  counter++
-  console.log(shopCart);
-  render(html` <nav>🛒${counter}</nav>`, $("#shop"));
+  counter++;
+  render(
+    html` <nav><span class="shop-icon" @click=${showCart}>🛒
+    <button>${counter}</button>
+  </span></nav>`,
+    $("#shop")
+  );
+};
+
+const showCart = () => {
+  let listCart = Object.keys(shopCart).map((key) => {
+    return html`<li>${key}
+    <span style="color:red">
+      ${shopCart[key]}
+    </span>
+
+    <button style="float:right">X</button>
+    </li>
+
+    `;
+  });
+  render(
+    html`
+        <ul>
+          ${listCart}
+        </ul>
+        <button class="send-btn" @click=${
+          ()=>{
+            alert(JSON.stringify({
+              table: uuid(),
+              data: shopCart
+            }));
+            console.log({shopCart});
+            shopCart = {};
+            window.location.reload();
+          }
+        } >ENVIAR</button>
+    `,
+
+    $("#cart")
+  );
 };
 
 const fetchFilters = async () => {
@@ -102,6 +190,7 @@ const fetchFilters = async () => {
       console.log(data);
       render(
         html`
+          <br />
           ${data.drinks.map(
             (drink) => html`
               <button id=${drink.strIngredient1} @click=${getCocktails}>
@@ -115,13 +204,29 @@ const fetchFilters = async () => {
     });
 };
 
+const filterFilters = (e) => {
+  let text = e.target.value;
+  let filter = $("#filters").querySelectorAll("button");
+  console.log(filter);
+  filter.forEach((button) => {
+    if (!button.id.includes(text)) {
+      button.style.display = "none";
+    } else {
+      button.style.display = "";
+    }
+  });
+};
+
 const app = () => {
   return html`
     ${styles}
     <div id="shop">
       <nav>🛒</nav>
     </div>
+    <div id="cart"></div>
+    <input @keyup=${filterFilters} type="text" />
     <div id="filters"></div>
+    <hr />
     <div id="cocktails"></div>
   `;
 };

@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lit-html": "^1.4.1"
+    "lit-html": "^1.4.1",
+    "uuid": "^8.3.2"
   }
 }
